@@ -70,5 +70,4 @@ trait WithCompanies
         $contactEloquent->save();
         return ContactMapper::fromEloquent($contactEloquent);
     }
-
 }

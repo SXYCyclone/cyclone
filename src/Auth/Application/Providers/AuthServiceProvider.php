@@ -34,5 +34,4 @@ class AuthServiceProvider extends ServiceProvider
             \Src\Auth\Application\JWTAuth::class
         );
     }
-
 }

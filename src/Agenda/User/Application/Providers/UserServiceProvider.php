@@ -2,7 +2,6 @@
 
 namespace Src\Agenda\User\Application\Providers;
 
-
 use Illuminate\Support\ServiceProvider;
 
 class UserServiceProvider extends ServiceProvider

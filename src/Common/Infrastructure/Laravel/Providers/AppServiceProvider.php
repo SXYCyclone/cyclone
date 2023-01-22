@@ -4,8 +4,6 @@ namespace Src\Common\Infrastructure\Laravel\Providers;
 
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\ParallelTesting;
-use Illuminate\Support\Facades\Artisan;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 
 class AppServiceProvider extends ServiceProvider

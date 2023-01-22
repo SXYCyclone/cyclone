@@ -15,8 +15,7 @@ class UpdateCompanyCommand implements CommandInterface
 
     public function __construct(
         private readonly CompanyData $company
-    )
-    {
+    ) {
         $this->repository = app()->make(CompanyRepositoryInterface::class);
     }
 

@@ -56,5 +56,4 @@ class CompanyDepartmentController
             return response()->error($e->getMessage(), Response::HTTP_UNAUTHORIZED);
         }
     }
-
 }

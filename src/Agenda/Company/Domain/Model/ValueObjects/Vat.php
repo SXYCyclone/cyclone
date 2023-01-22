@@ -32,5 +32,4 @@ final class Vat extends ValueObject
     {
         return $this->vat;
     }
-
 }

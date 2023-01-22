@@ -21,8 +21,8 @@ class CompanyWithMainAddressData
         public readonly int $num_contacts,
         public readonly int $num_departments,
         public readonly bool $is_active,
-    )
-    {}
+    ) {
+    }
 
     public static function fromEloquent(CompanyEloquentModel $companyEloquent): self
     {

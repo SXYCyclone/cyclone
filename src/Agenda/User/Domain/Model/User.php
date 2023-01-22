@@ -21,7 +21,8 @@ class User extends AggregateRoot
         public Avatar $avatar,
         public readonly bool $is_admin = false,
         public readonly bool $is_active = true
-    ) {}
+    ) {
+    }
 
     public function validateNonAdminWithCompany(): User
     {

@@ -7,7 +7,9 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
-    use CreatesApplication, WithLogin, LazilyRefreshDatabase;
+    use CreatesApplication;
+    use WithLogin;
+    use LazilyRefreshDatabase;
 
     protected function setUp(): void
     {

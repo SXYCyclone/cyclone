@@ -10,8 +10,7 @@ final class Avatar extends ValueObject
     public function __construct(
         public ?string $binary_data,
         public ?string $filename
-    )
-    {
+    ) {
         if (!$this->binary_data && $this->filename) {
             $this->binary_data = app()->make(AvatarRepositoryInterface::class)->retrieveAvatarFile($this);
         }

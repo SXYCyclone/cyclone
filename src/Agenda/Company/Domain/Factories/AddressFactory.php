@@ -44,5 +44,4 @@ class AddressFactory
             email: new Email($attributes['email'], true),
         );
     }
-
 }

@@ -26,7 +26,8 @@ class Address extends Entity
         public readonly Country $country,
         public readonly Phone $phone,
         public readonly Email $email
-    ) {}
+    ) {
+    }
 
     public function toArray(): array
     {

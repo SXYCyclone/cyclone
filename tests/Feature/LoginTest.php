@@ -3,17 +3,15 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Testing\TestResponse;
 use Src\Agenda\User\Domain\Model\User;
-use Src\Agenda\User\Infrastructure\EloquentModels\UserEloquentModel;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 use Tests\WithLogin;
 
 class LoginTest extends TestCase
 {
-    use RefreshDatabase, WithLogin;
+    use RefreshDatabase;
+    use WithLogin;
 
     protected User $user;
     protected string $login_uri;
@@ -38,7 +36,7 @@ class LoginTest extends TestCase
     }
 
     /** @test */
-    function active_user_can_login()
+    public function active_user_can_login()
     {
         $credentials = $this->validCredentials(['is_active' => true]);
 
@@ -51,7 +49,7 @@ class LoginTest extends TestCase
     }
 
     /** @test */
-    function inactive_user_cannot_login()
+    public function inactive_user_cannot_login()
     {
         $credentials = $this->validCredentials(['is_active' => false]);
 

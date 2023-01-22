@@ -10,7 +10,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class UserEloquentModel extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, Notifiable;
+    use HasApiTokens;
+    use Notifiable;
 
     protected $table = 'users';
 

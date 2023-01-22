@@ -25,6 +25,18 @@
                 "conditions": []
             },
             {
+                "action": "vendor/bin/pint --test --dirty",
+                "options": [],
+                "conditions": [
+                    {
+                        "exec": "\\CaptainHook\\App\\Hook\\Condition\\FileStaged\\OfType",
+                        "args": [
+                            "php"
+                        ]
+                    }
+                ]
+            },
+            {
                 "action": "php artisan test -p",
                 "options": [],
                 "conditions": []

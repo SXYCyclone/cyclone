@@ -9,7 +9,8 @@ use Src\Agenda\User\Domain\Factories\UserFactory;
 
 trait WithLogin
 {
-    use WithFaker, WithCompanies;
+    use WithFaker;
+    use WithCompanies;
 
     /**
      * Create a new user instance.

@@ -20,5 +20,4 @@ interface UserRepositoryInterface
     public function update(User $user, Password $password): void;
 
     public function delete(int $user_id): void;
-
 }

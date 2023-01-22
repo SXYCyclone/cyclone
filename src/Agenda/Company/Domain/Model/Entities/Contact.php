@@ -19,7 +19,8 @@ class Contact extends Entity
         public readonly Email $email,
         public readonly Phone $phone,
         public readonly ?int $address_id = null,
-    ) {}
+    ) {
+    }
 
     public function toArray(): array
     {

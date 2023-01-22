@@ -1,4 +1,5 @@
 <?php
+
 namespace Src\Auth\Presentation\HTTP;
 
 use Illuminate\Auth\AuthenticationException;
@@ -44,7 +45,7 @@ class AuthController extends Controller
         } catch (ValidationException $validationException) {
             return response()->json($validationException->errors(), Response::HTTP_BAD_REQUEST);
         } catch (AuthenticationException) {
-            return response()->json(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED );
+            return response()->json(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
         }
     }
 

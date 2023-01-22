@@ -12,8 +12,7 @@ class DestroyCompanyCommand implements CommandInterface
 
     public function __construct(
         private readonly int $company_id
-    )
-    {
+    ) {
         $this->repository = app()->make(CompanyRepositoryInterface::class);
     }
 

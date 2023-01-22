@@ -19,8 +19,7 @@ class StoreUserCommand implements CommandInterface
     public function __construct(
         private readonly User $user,
         private readonly Password $password
-    )
-    {
+    ) {
         $this->repository = app()->make(UserRepositoryInterface::class);
         $this->avatarRepository = app()->make(AvatarRepositoryInterface::class);
     }

@@ -14,7 +14,8 @@ class Department extends Entity
         public readonly Name $name,
         public readonly int $address_id,
         public readonly bool $is_active = true
-    ) {}
+    ) {
+    }
 
     public function toArray(): array
     {

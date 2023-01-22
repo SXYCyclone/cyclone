@@ -12,8 +12,7 @@ class RemoveDepartmentCommand implements CommandInterface
 
     public function __construct(
         private readonly int $department_id
-    )
-    {
+    ) {
         $this->repository = app()->make(DepartmentRepositoryInterface::class);
     }
 

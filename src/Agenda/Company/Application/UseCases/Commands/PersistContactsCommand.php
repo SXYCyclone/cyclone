@@ -14,8 +14,7 @@ class PersistContactsCommand implements CommandInterface
 
     public function __construct(
         private readonly Company $company
-    )
-    {
+    ) {
         $this->repository = app()->make(ContactRepositoryInterface::class);
     }
 

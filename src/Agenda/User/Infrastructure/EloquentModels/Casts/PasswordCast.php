@@ -6,7 +6,6 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
 class PasswordCast implements CastsAttributes
 {
-
     /**
      * @inheritDoc
      */

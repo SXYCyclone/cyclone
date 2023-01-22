@@ -26,7 +26,8 @@ class Company extends AggregateRoot
         public readonly Departments $departments,
         public readonly Contacts $contacts,
         public readonly bool $is_active = true
-    ) {}
+    ) {
+    }
 
     public function addAddress(Address $address): void
     {

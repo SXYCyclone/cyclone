@@ -12,8 +12,7 @@ class FindCompanyByVatQuery implements QueryInterface
 
     public function __construct(
         private readonly string $vat
-    )
-    {
+    ) {
         $this->repository = app()->make(CompanyRepositoryInterface::class);
     }
 

@@ -19,8 +19,8 @@ class CompanyData
         public readonly Address $main_address,
         public readonly Vat $vat,
         public readonly bool $is_active,
-    )
-    {}
+    ) {
+    }
 
     public static function fromRequest(Request $request, ?int $company_id = null): CompanyData
     {

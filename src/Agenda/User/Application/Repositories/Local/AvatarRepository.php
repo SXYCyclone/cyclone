@@ -12,9 +12,9 @@ use Src\Agenda\User\Domain\Repositories\AvatarRepositoryInterface;
 class AvatarRepository implements AvatarRepositoryInterface
 {
     public function __construct(
-        private readonly ClientInterface $guzzle = new Client
-    )
-    {}
+        private readonly ClientInterface $guzzle = new Client()
+    ) {
+    }
 
     public function getRandomAvatar($url = 'https://doodleipsum.com/300/avatar-2?shape=circle'): Avatar
     {

@@ -12,8 +12,7 @@ class DestroyUserCommand implements CommandInterface
 
     public function __construct(
         private readonly int $id
-    )
-    {
+    ) {
         $this->repository = app()->make(UserRepositoryInterface::class);
     }
 

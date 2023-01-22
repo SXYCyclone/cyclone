@@ -2,7 +2,6 @@
 
 namespace Src\Agenda\User\Domain\Repositories;
 
-
 use Src\Agenda\User\Domain\Model\ValueObjects\Avatar;
 
 interface AvatarRepositoryInterface

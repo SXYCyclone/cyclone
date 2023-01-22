@@ -12,8 +12,7 @@ class RemoveContactCommand implements CommandInterface
 
     public function __construct(
         private readonly int $contact_id
-    )
-    {
+    ) {
         $this->repository = app()->make(ContactRepositoryInterface::class);
     }
 

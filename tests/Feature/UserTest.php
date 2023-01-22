@@ -194,7 +194,6 @@ class UserTest extends TestCase
             ->put($this->user_uri . '/' . $randomUserId, $requestBodyNoPasswordConfirmation)
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJson(['error' => 'Passwords do not match']);
-
     }
 
     /** @test */

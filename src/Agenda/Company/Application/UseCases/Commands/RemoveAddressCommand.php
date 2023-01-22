@@ -12,8 +12,7 @@ class RemoveAddressCommand implements CommandInterface
 
     public function __construct(
         private readonly int $address_id
-    )
-    {
+    ) {
         $this->repository = app()->make(AddressRepositoryInterface::class);
     }
 
