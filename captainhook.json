@@ -13,8 +13,14 @@
         ]
     },
     "pre-push": {
-        "enabled": false,
-        "actions": []
+        "enabled": true,
+        "actions": [
+            {
+                "action": "php artisan test -p",
+                "options": [],
+                "conditions": []
+            }
+        ]
     },
     "pre-commit": {
         "enabled": true,
@@ -35,11 +41,6 @@
                         ]
                     }
                 ]
-            },
-            {
-                "action": "php artisan test -p",
-                "options": [],
-                "conditions": []
             }
         ]
     },
