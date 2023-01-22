@@ -1,4 +1,4 @@
-# Yet another Laravel 9 DDD interpretation
+# Cyclone - SaaS platform with CMS, Minecraft, ChatBot and more
 
 ## 🚀 Current features
 - Authentication with [Tymon's JWT Auth](https://github.com/tymondesigns/jwt-auth)
@@ -8,32 +8,9 @@
 - Integration test for User's avatar third-party API
 
 ## 📘 Introduction
-I want to share with you yet another Laravel DDD interpretation, my approach to what could be a clean architecture design without having to give away most of the features we love from Laravel.
+This is a Laravel project that I have been working on for a while. It is a SaaS platform that I am building for my own use, but I am also sharing it with the community in case someone wants to use it as a base for their own projects.
 
-Some of my inspirations have been these remarkable articles:
-- https://www.hibit.dev/posts/43/domain-driven-design-with-laravel-9
-- https://lorisleiva.com/conciliating-laravel-and-ddd
-- https://ntorga.com/the-presentation-layer-clean-architecture-and-domain-driven-design-on-php/
-- https://ntorga.com/the-domain-layer-clean-architecture-and-domain-driven-design-on-php/
-- https://martinjoo.dev/blog
-
-First, I want to say that this is my own personal interpretation, which is also very open to suggestions and opinions. One of the things I have learned along this time is that what we call clean architectures, DDD, hexagonal architectures, etc. is interpreted differently from author to author although most of them refer to Uncle Bob, Martin Fowler, Eric Evans and Vaughn Vernon as the most influential on this topic. So, if you want to delve into it, I recommend reading about them.
-
-## 🤔 Why use this approach?
-
-Okay, let’s suppose that you want to program an app with Laravel that you expect to be mid-to-large size. You may have been working on some of these big projects but dealt with bloated controllers, monstrous models, etc. So for this one, you want to keep your sanity.
-
-You hear about clean architecture and would like to try it, but its practices kind of break with the Laravel Way™ of building things, so either you have to stick with Laravel or create almost all the core functionalities with that permanent feeling of reinventing the wheel at every step.
-
-I don’t have a perfect solution for this, and I haven’t heard of anyone having it, but I found a way that allows me to build things by having a more controlled planning and structure of my project despite having to deal with some extra boilerplate.
-
-## 📗 First steps
-1. ```composer install```
-2. ```cp .env.example .env```
-3. ```php artisan key:generate```
-4. ```php artisan jwt:secret```
-5. ```php artisan test```
-6. For new domains, use this command: ```php artisan make:domain {Bounded Context} {Domain}``` (e.g. ```php artisan make:domain Blog Post```)
+This project is based on Laravel 9 DDD interpretation by [@Orphail](https://github.com/Orphail). You can find the original repository [here](https://github.com/Orphail/laravel-ddd).
 
 ## 📁 Structure particularities
 
