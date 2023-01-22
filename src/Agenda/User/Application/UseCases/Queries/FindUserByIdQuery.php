@@ -20,6 +20,6 @@ class FindUserByIdQuery implements QueryInterface
     public function handle(): User
     {
         authorize('findById', UserPolicy::class);
-        return $this->repository->findById($this->id);
+        return $this->repository->findById((string)$this->id);
     }
 }

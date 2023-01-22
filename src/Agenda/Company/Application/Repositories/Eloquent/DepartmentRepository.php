@@ -17,6 +17,7 @@ class DepartmentRepository implements DepartmentRepositoryInterface
             $departmentEloquent->company_id = $company->id;
             $departmentEloquent->save();
         }
+        /** @phpstan-ignore-next-line Waiting for upstream reply */
         return DepartmentMapper::fromEloquent($departmentEloquent);
     }
     public function remove(int $department_id): void

@@ -16,7 +16,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property int|null $company_id
  * @property string|null $avatar
  * @property string $email
- * @property $password
+ * @property string $password
  * @property \Illuminate\Support\Carbon|null $email_verified_at
  * @property bool $is_admin
  * @property bool $is_active

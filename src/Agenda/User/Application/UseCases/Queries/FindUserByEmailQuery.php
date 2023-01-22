@@ -2,6 +2,7 @@
 
 namespace Src\Agenda\User\Application\UseCases\Queries;
 
+use Src\Agenda\User\Domain\Model\User;
 use Src\Agenda\User\Domain\Policies\UserPolicy;
 use Src\Agenda\User\Domain\Repositories\UserRepositoryInterface;
 use Src\Common\Domain\QueryInterface;
@@ -16,7 +17,7 @@ class FindUserByEmailQuery implements QueryInterface
         $this->repository = app()->make(UserRepositoryInterface::class);
     }
 
-    public function handle(): array
+    public function handle(): User
     {
         authorize('findByEmail', UserPolicy::class);
         return $this->repository->findByEmail($this->email);

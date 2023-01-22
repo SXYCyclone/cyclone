@@ -31,7 +31,7 @@
                 "conditions": []
             },
             {
-                "action": "vendor/bin/pint --test --dirty",
+                "action": "vendor/bin/pint --dirty && git add {$STAGED_FILES|of-type:php}",
                 "options": [],
                 "conditions": [
                     {

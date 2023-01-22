@@ -17,6 +17,7 @@ class ContactRepository implements ContactRepositoryInterface
             $contactEloquent->company_id = $company->id;
             $contactEloquent->save();
         }
+        /** @phpstan-ignore-next-line Waiting for upstream reply */
         return ContactMapper::fromEloquent($contactEloquent);
     }
     public function remove(int $contact_id): void

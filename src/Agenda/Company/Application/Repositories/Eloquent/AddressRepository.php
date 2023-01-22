@@ -17,8 +17,10 @@ class AddressRepository implements AddressRepositoryInterface
             $addressEloquent->company_id = $company->id;
             $addressEloquent->save();
         }
+        /** @phpstan-ignore-next-line Waiting for upstream reply */
         return AddressMapper::fromEloquent($addressEloquent);
     }
+
     public function remove(int $address_id): void
     {
         $addressEloquent = AddressEloquentModel::query()->findOrFail($address_id);

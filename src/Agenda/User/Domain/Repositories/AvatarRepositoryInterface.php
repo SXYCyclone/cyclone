@@ -6,7 +6,7 @@ use Src\Agenda\User\Domain\Model\ValueObjects\Avatar;
 
 interface AvatarRepositoryInterface
 {
-    public function getRandomAvatar(?string $url): Avatar;
+    public function getRandomAvatar(string $url = null): Avatar;
 
     public function storeAvatarFile(Avatar $avatar): ?string;
 

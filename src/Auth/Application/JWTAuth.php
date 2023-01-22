@@ -14,11 +14,9 @@ use Tymon\JWTAuth\Facades\JWTAuth as TymonJWTAuth;
 
 class JWTAuth implements AuthInterface
 {
-    private AvatarRepositoryInterface $avatarRepository;
-
-    public function __construct(AvatarRepositoryInterface $avatarRepository)
-    {
-        $this->avatarRepository = $avatarRepository;
+    public function __construct(
+        // private AvatarRepositoryInterface $avatarRepository
+    ) {
     }
 
     public function login(array $credentials): string

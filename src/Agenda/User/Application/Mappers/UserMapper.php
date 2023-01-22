@@ -42,12 +42,13 @@ class UserMapper
 
     public static function fromAuth(Authenticatable $userEloquent): User
     {
+        /** @var User $userEloquent */
         $avatar = new Avatar(binary_data: null, filename: $userEloquent->avatar);
         return new User(
             id: $userEloquent->id,
             name: new Name($userEloquent->name),
             email: new Email($userEloquent->email),
-            company_id: new CompanyId($userEloquent->company_id),
+            company_id: new CompanyId($userEloquent->company_id->value),
             avatar: $avatar,
             is_admin: $userEloquent->is_admin,
             is_active: $userEloquent->is_active

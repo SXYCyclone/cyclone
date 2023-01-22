@@ -34,7 +34,7 @@ class UpdateUserCommand implements CommandInterface
         if ($avatar->hasBinaryData()) {
             $filename = $this->avatarRepository->storeAvatarFile($avatar);
             $this->user->setAvatar($avatar->binary_data, $filename);
-            $oldUser = $this->repository->findById($this->user->id);
+            $oldUser = $this->repository->findById((string)$this->user->id);
             $this->avatarRepository->deleteAvatarFile($oldUser->avatar);
         }
 

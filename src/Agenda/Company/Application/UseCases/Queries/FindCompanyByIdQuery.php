@@ -20,6 +20,6 @@ class FindCompanyByIdQuery implements QueryInterface
     public function handle(): Company
     {
         authorize('findById', CompanyPolicy::class, ['company_id' => $this->id]);
-        return $this->repository->findById($this->id);
+        return $this->repository->findById((string)$this->id);
     }
 }

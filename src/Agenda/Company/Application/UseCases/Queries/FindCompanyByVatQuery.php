@@ -2,6 +2,7 @@
 
 namespace Src\Agenda\Company\Application\UseCases\Queries;
 
+use Src\Agenda\Company\Domain\Model\Company;
 use Src\Agenda\Company\Domain\Policies\CompanyPolicy;
 use Src\Agenda\Company\Domain\Repositories\CompanyRepositoryInterface;
 use Src\Common\Domain\QueryInterface;
@@ -16,7 +17,7 @@ class FindCompanyByVatQuery implements QueryInterface
         $this->repository = app()->make(CompanyRepositoryInterface::class);
     }
 
-    public function handle(): array
+    public function handle(): Company
     {
         authorize('findByVat', CompanyPolicy::class);
         return $this->repository->findByVat($this->vat);
