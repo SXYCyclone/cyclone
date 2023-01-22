@@ -15,6 +15,9 @@ $app = new Illuminate\Foundation\Application(
     $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
 );
 
+// override the app path since we move the app folder to src
+$app->useAppPath($app->basePath('src'));
+
 /*
 |--------------------------------------------------------------------------
 | Bind Important Interfaces
