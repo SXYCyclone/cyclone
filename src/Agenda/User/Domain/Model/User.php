@@ -17,7 +17,7 @@ class User extends AggregateRoot
         public readonly ?int $id,
         public readonly Name $name,
         public readonly Email $email,
-        public readonly CompanyId $company_id,
+        public readonly ?CompanyId $company_id,
         public Avatar $avatar,
         public readonly bool $is_admin = false,
         public readonly bool $is_active = true

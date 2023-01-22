@@ -48,7 +48,7 @@ class UserMapper
             id: $userEloquent->id,
             name: new Name($userEloquent->name),
             email: new Email($userEloquent->email),
-            company_id: new CompanyId($userEloquent->company_id->value),
+            company_id: new CompanyId($userEloquent->company_id?->value),
             avatar: $avatar,
             is_admin: $userEloquent->is_admin,
             is_active: $userEloquent->is_active
@@ -63,7 +63,7 @@ class UserMapper
         }
         $userEloquent->name = $user->name;
         $userEloquent->email = $user->email;
-        $userEloquent->company_id = $user->company_id->value;
+        $userEloquent->company_id = $user->company_id?->value;
         $userEloquent->avatar = $user->avatar->filename;
         $userEloquent->is_admin = $user->is_admin;
         $userEloquent->is_active = $user->is_active;
