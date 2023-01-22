@@ -4,6 +4,35 @@ namespace Src\Agenda\Company\Infrastructure\EloquentModels;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Src\Agenda\Company\Infrastructure\EloquentModels\CompanyEloquentModel
+ *
+ * @property int $id
+ * @property string $fiscal_name
+ * @property string $social_name
+ * @property string $vat
+ * @property bool $is_active
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Src\Agenda\Company\Infrastructure\EloquentModels\AddressEloquentModel[] $addresses
+ * @property-read int|null $addresses_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Src\Agenda\Company\Infrastructure\EloquentModels\ContactEloquentModel[] $contacts
+ * @property-read int|null $contacts_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Src\Agenda\Company\Infrastructure\EloquentModels\DepartmentEloquentModel[] $departments
+ * @property-read int|null $departments_count
+ * @property-read mixed $main_address
+ * @method static \Illuminate\Database\Eloquent\Builder|CompanyEloquentModel newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|CompanyEloquentModel newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|CompanyEloquentModel query()
+ * @method static \Illuminate\Database\Eloquent\Builder|CompanyEloquentModel whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompanyEloquentModel whereFiscalName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompanyEloquentModel whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompanyEloquentModel whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompanyEloquentModel whereSocialName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompanyEloquentModel whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompanyEloquentModel whereVat($value)
+ * @mixin \Eloquent
+ */
 class CompanyEloquentModel extends Model
 {
     protected $table = 'companies';

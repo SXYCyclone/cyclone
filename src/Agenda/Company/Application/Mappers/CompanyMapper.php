@@ -40,13 +40,13 @@ class CompanyMapper
     {
         $addresses = $with_addresses ? array_map(function ($address) {
             return AddressMapper::fromArray($address);
-        }, $companyEloquent->addresses?->toArray() ?? []) : [];
+        }, $companyEloquent->addresses->toArray()) : [];
         $departments = $with_departments ? array_map(function ($address) {
             return DepartmentMapper::fromArray($address);
-        }, $companyEloquent->departments?->toArray() ?? []) : [];
+        }, $companyEloquent->departments->toArray()) : [];
         $contacts = $with_contacts ? array_map(function ($address) {
             return ContactMapper::fromArray($address);
-        }, $companyEloquent->contacts?->toArray() ?? []) : [];
+        }, $companyEloquent->contacts->toArray()) : [];
         return new Company(
             id: $companyEloquent->id,
             fiscal_name: new FiscalName($companyEloquent->fiscal_name),
