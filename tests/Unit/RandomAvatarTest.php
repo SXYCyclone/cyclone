@@ -14,10 +14,11 @@ class RandomAvatarTest extends TestCase
     /** @test */
     public function get_random_avatar()
     {
-        $guzzleMock = \Mockery::mock(Client::class);
-        $guzzleMock
-            ->shouldReceive('request')
-            ->andReturn(new Response(200, ['Content-Type' => 'image/png'], 'binary data'));
+        /** @var Client $guzzleMock */
+        $guzzleMock = $this->mock(Client::class, function ($mock) {
+            $mock->shouldReceive('request')
+                ->andReturn(new Response(200, ['Content-Type' => 'image/png'], 'binary data'));
+        });
 
         app()->bind(AvatarRepositoryInterface::class, function () use ($guzzleMock) {
             return new AvatarRepository($guzzleMock);

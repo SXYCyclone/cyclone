@@ -10,6 +10,9 @@ use Tests\TestCase;
 
 class CompanyTest extends TestCase
 {
+    private string $company_uri;
+    private string $index_uri;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -67,7 +70,7 @@ class CompanyTest extends TestCase
             'num_addresses' => 1,
             'num_contacts' => 0,
             'num_departments' => 0,
-            'is_active' => $requestBody['is_active']
+            'is_active' => $requestBody['is_active'],
         ];
 
         unset($expectedResponse['main_address']['id']);
@@ -92,7 +95,7 @@ class CompanyTest extends TestCase
             'social_name' => $this->faker->company,
             'vat' => 'invalidvat',
             'is_active' => $this->faker->boolean,
-            'main_address' => AddressFactory::new()->toArray()
+            'main_address' => AddressFactory::new()->toArray(),
         ];
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
@@ -118,7 +121,7 @@ class CompanyTest extends TestCase
             'social_name' => $this->faker->company,
             'vat' => $company->json()['vat'],
             'is_active' => $this->faker->boolean,
-            'main_address' => AddressFactory::new()->toArray()
+            'main_address' => AddressFactory::new()->toArray(),
         ];
 
         $expectedResponse = [
@@ -127,11 +130,11 @@ class CompanyTest extends TestCase
             'social_name' => $requestBody['social_name'],
             'main_address' => $requestBody['main_address'],
             'vat' => $requestBody['vat'],
-            'is_active' => $requestBody['is_active']
+            'is_active' => $requestBody['is_active'],
         ];
 
-        unset($expectedResponse['addresses'][0]['id']);
-        unset($expectedResponse['addresses'][1]['id']);
+        // this is from upstream but don't know why it is needed
+//        unset($expectedResponse['addresses'][0]['id'], $expectedResponse['addresses'][1]['id']);
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
             ->put($this->company_uri . '/' . $randomCompanyId, $requestBody)
@@ -143,7 +146,7 @@ class CompanyTest extends TestCase
             'social_name' => $this->faker->company,
             'vat' => 'invalidvat',
             'is_active' => $this->faker->boolean,
-            'main_address' => AddressFactory::new()->toArray()
+            'main_address' => AddressFactory::new()->toArray(),
         ];
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
@@ -431,6 +434,7 @@ class CompanyTest extends TestCase
     }
 
     // User Tests
+
     /** @test */
     public function user_cannot_retrieve_all_companies()
     {
@@ -471,7 +475,7 @@ class CompanyTest extends TestCase
             'social_name' => $this->faker->company,
             'vat' => $this->faker->bothify('?#########'),
             'is_active' => $this->faker->boolean,
-            'main_address' => AddressFactory::new()->toArray()
+            'main_address' => AddressFactory::new()->toArray(),
         ];
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->userToken])
@@ -497,7 +501,7 @@ class CompanyTest extends TestCase
             'social_name' => $this->faker->company,
             'vat' => $this->faker->bothify('?#########'),
             'is_active' => $this->faker->boolean,
-            'main_address' => AddressFactory::new()->toArray()
+            'main_address' => AddressFactory::new()->toArray(),
         ];
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->userToken])
@@ -511,7 +515,7 @@ class CompanyTest extends TestCase
     {
         $numberCompanies = $this->faker->numberBetween(1, 10);
         $company_ids = $this->createRandomCompanies($numberCompanies);
-        $randomCompanyId = $this->faker->randomELement($company_ids);
+        $randomCompanyId = $this->faker->randomElement($company_ids);
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->userToken])
             ->delete($this->company_uri . '/' . $randomCompanyId)

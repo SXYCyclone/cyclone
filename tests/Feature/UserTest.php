@@ -13,6 +13,10 @@ class UserTest extends TestCase
 {
     use WithUsers;
 
+    private string $user_uri;
+    private string $index_uri;
+    private string $random_avatar_uri;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -224,10 +228,11 @@ class UserTest extends TestCase
     public function can_get_random_image()
     {
         $binaryDataStr = 'binary data';
-        $guzzleMock = \Mockery::mock(Client::class);
-        $guzzleMock
-            ->shouldReceive('request')
-            ->andReturn(new \GuzzleHttp\Psr7\Response(200, ['Content-Type' => 'image/png'], $binaryDataStr));
+        /** @var Client $guzzleMock */
+        $guzzleMock = $this->mock(Client::class, function ($mock) use ($binaryDataStr) {
+            $mock->shouldReceive('request')
+                ->andReturn(new \GuzzleHttp\Psr7\Response(200, ['Content-Type' => 'image/png'], $binaryDataStr));
+        });
 
         app()->bind(AvatarRepositoryInterface::class, function () use ($guzzleMock) {
             return new AvatarRepository($guzzleMock);

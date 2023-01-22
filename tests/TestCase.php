@@ -11,6 +11,10 @@ abstract class TestCase extends BaseTestCase
     use WithLogin;
     use LazilyRefreshDatabase;
 
+    protected string $adminToken;
+    protected array $userData;
+    protected string $userToken;
+
     protected function setUp(): void
     {
         parent::setUp();

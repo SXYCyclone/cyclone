@@ -18,6 +18,7 @@ class LoginTest extends TestCase
     protected string $logout_uri;
     protected string $refresh_uri;
     protected string $me_uri;
+    protected string $token;
 
     /**
      * Create a new faker instance.
