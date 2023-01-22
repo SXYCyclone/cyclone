@@ -44,7 +44,7 @@ class LoginTest extends TestCase
         $this->post($this->login_uri, $credentials)
             ->assertSessionHasNoErrors()
             ->assertStatus(Response::HTTP_OK)
-            ->assertSee(['accessToken']);
+            ->assertSee(['access_token']);
 
         $this->assertAuthenticated();
     }
@@ -132,7 +132,7 @@ class LoginTest extends TestCase
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])->post($this->refresh_uri)
             ->assertSessionHasNoErrors()
             ->assertStatus(Response::HTTP_OK)
-            ->assertSee(['accessToken']);
+            ->assertSee(['access_token']);
 
         $newToken = $this->getToken($response);
 

@@ -50,6 +50,6 @@ trait WithLogin
     protected function getToken(TestResponse $response)
     {
         $arResponse = json_decode($response->getContent(), true);
-        return $arResponse['accessToken'];
+        return $arResponse['access_token'];
     }
 }

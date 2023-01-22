@@ -7,10 +7,16 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Specifications\OpenApi\RequestBodies\Auth\LoginRequestBody;
+use Specifications\OpenApi\Responses\Auth\TokenIssuedResponse;
+use Specifications\OpenApi\Responses\ErrorAuthenticationResponse;
+use Specifications\OpenApi\Responses\ErrorValidationResponse;
 use Src\Auth\Domain\AuthInterface;
 use Src\Common\Infrastructure\Laravel\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use Vyuldashev\LaravelOpenApi\Attributes as OpenApi;
 
+#[OpenApi\PathItem]
 class AuthController extends Controller
 {
     private AuthInterface $auth;
@@ -26,6 +32,11 @@ class AuthController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
+    #[OpenApi\Operation(tags: ['auth'])]
+    #[OpenApi\RequestBody(factory: LoginRequestBody::class)]
+    #[OpenApi\Response(factory: TokenIssuedResponse::class)]
+    #[OpenApi\Response(factory: ErrorValidationResponse::class, statusCode: 400)]
+    #[OpenApi\Response(factory: ErrorAuthenticationResponse::class, statusCode: 401)]
     public function login(Request $request): JsonResponse
     {
         try {
@@ -89,14 +100,14 @@ class AuthController extends Controller
     /**
      * Get the token array structure.
      *
-     * @param  string $token
+     * @param string $token
      *
      * @return JsonResponse
      */
     protected function respondWithToken(string $token): JsonResponse
     {
         return response()->json([
-            'accessToken' => $token,
+            'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => config('jwt.ttl') * 1,
         ]);

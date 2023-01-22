@@ -10,7 +10,8 @@
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
-        "tymon/jwt-auth": "^1.0"
+        "tymon/jwt-auth": "^1.0",
+        "vyuldashev/laravel-openapi": "^1.8"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.12",
@@ -33,7 +34,8 @@
         "psr-4": {
             "Src\\": "src/",
             "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/"
+            "Database\\Seeders\\": "database/seeders/",
+            "Specifications\\": "specifications/"
         }
     },
     "autoload-dev": {
