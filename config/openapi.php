@@ -23,14 +23,14 @@ return [
 
             'tags' => [
                 [
-                    'name' => 'auth',
+                    'name' => 'domain:Auth',
                     'description' => 'Authenticating users',
-                ]
+                ],
 
             ],
 
             'security' => [
-                 GoldSpecDigital\ObjectOrientedOAS\Objects\SecurityRequirement::create()->securityScheme('BearerToken'),
+                GoldSpecDigital\ObjectOrientedOAS\Objects\SecurityRequirement::create()->securityScheme('BearerToken'),
             ],
 
             // Non standard attributes used by code/doc generation tools can be added here
@@ -55,7 +55,7 @@ return [
             // Register custom middlewares for different objects.
             'middlewares' => [
                 'paths' => [
-                    //
+                    \Specifications\OpenApi\Middlewares\AddDomainContextToPathItem::class,
                 ],
                 'components' => [
                     //

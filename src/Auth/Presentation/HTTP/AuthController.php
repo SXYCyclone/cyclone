@@ -35,7 +35,7 @@ class AuthController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    #[OpenApi\Operation(tags: ['auth'])]
+    #[OpenApi\Operation]
     #[OpenApi\RequestBody(factory: LoginRequestBody::class)]
     #[OpenApi\Response(factory: TokenIssuedResponse::class)]
     #[OpenApi\Response(factory: ErrorValidationResponse::class, statusCode: 400)]
@@ -66,7 +66,7 @@ class AuthController extends Controller
      *
      * @return JsonResponse
      */
-    #[OpenApi\Operation(tags: ['auth'])]
+    #[OpenApi\Operation]
     #[OpenApi\Response(factory: CurrentUserResponse::class)]
     #[OpenApi\Response(factory: ErrorAuthenticationResponse::class, statusCode: 401)]
     public function me(): JsonResponse
@@ -79,7 +79,7 @@ class AuthController extends Controller
      *
      * @return JsonResponse
      */
-    #[OpenApi\Operation(tags: ['auth'])]
+    #[OpenApi\Operation]
     #[OpenApi\Response(factory: TokenInvalidatedResponse::class)]
     public function logout(): JsonResponse
     {
@@ -92,7 +92,7 @@ class AuthController extends Controller
      *
      * @return JsonResponse
      */
-    #[OpenApi\Operation(tags: ['auth'])]
+    #[OpenApi\Operation]
     #[OpenApi\Response(factory: TokenIssuedResponse::class)]
     #[OpenApi\Response(factory: ErrorAuthenticationResponse::class, statusCode: 401)]
     public function refresh(): JsonResponse
