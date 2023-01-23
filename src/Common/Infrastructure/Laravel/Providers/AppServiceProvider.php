@@ -27,9 +27,12 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         $responseMacros = [
-            'success' => function ($data = [], $message = '', $code = 200, $headers = [], $option = 0): JsonResponse {
+            'success' => function (mixed $data = [], $message = '', $code = 200, $headers = [], $option = 0): JsonResponse {
                 if ($data instanceof \JsonSerializable) {
                     $data = $data->jsonSerialize();
+                }
+                if (is_object($data)) {
+                    $data = (array)$data;
                 }
 
                 return JianneiResponse::success($data, $message, $code, $headers, $option);

@@ -23,13 +23,13 @@ class ResponseFormatter implements Format
     /**
      * Format return data structure.
      *
-     * @param array|null  $data
+     * @param mixed       $data
      * @param string|null $message
      * @param int         $code
      * @param null        $errors
      * @return array
      */
-    public function data(?array $data, ?string $message, int $code, $errors = null): array
+    public function data(mixed $data, ?string $message, int $code, $errors = null): array
     {
         if (!is_null($errors) || !$data) {
             // If there are errors, or no data (means error), return the error structure.
@@ -54,7 +54,7 @@ class ResponseFormatter implements Format
             }
         } else {
             // If there is data, return the success structure.
-            if (Arr::isAssoc($data)) {
+            if (is_object($data) || Arr::isAssoc($data)) {
                 // Object
                 $data = [
                     'data' => $data,

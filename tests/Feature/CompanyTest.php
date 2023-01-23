@@ -27,11 +27,11 @@ class CompanyTest extends TestCase
         $this->createRandomCompanies($companiesCount);
 
         $companies = $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->get($this->index_uri)
+            ->getJson($this->index_uri)
             ->assertStatus(Response::HTTP_OK)
-            ->assertJsonCount($companiesCount + 1); // +1 for the non-admin user
+            ->assertJsonCount($companiesCount + 1, 'data.items'); // +1 for the non-admin user
 
-        $companyInfo = $companies->json()[0];
+        $companyInfo = $companies->json('data.items')[0];
         $this->assertEquals(
             ['id', 'fiscal_name', 'social_name', 'vat', 'main_address', 'num_addresses', 'num_contacts', 'num_departments', 'is_active'],
             array_keys($companyInfo)
@@ -46,9 +46,9 @@ class CompanyTest extends TestCase
         $randomCompanyId = $this->faker->randomElement($company_ids);
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->get($this->company_uri . '/' . $randomCompanyId)
+            ->getJson($this->company_uri . '/' . $randomCompanyId)
             ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure(['id', 'fiscal_name', 'social_name', 'vat', 'addresses', 'contacts', 'departments', 'is_active']);
+            ->assertJsonStructure(['data' => ['id', 'fiscal_name', 'social_name', 'vat', 'addresses', 'contacts', 'departments', 'is_active']]);
     }
 
     /** @test */
@@ -76,15 +76,15 @@ class CompanyTest extends TestCase
         unset($expectedResponse['main_address']['id']);
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->post($this->company_uri, $requestBody)
+            ->postJson($this->company_uri, $requestBody)
             ->assertStatus(Response::HTTP_CREATED)
-            ->assertJson($expectedResponse);
+            ->assertJson(['data' => $expectedResponse]);
 
         // Assert cannot create company with same vat
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->post($this->company_uri, $requestBody)
+            ->postJson($this->company_uri, $requestBody)
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJson(['error' => 'Vat is already used']);
+            ->assertJsonPath('error.message', 'Vat is already used');
     }
 
     /** @test */
@@ -99,9 +99,9 @@ class CompanyTest extends TestCase
         ];
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->post($this->company_uri, $requestBodyInvalidVat)
+            ->postJson($this->company_uri, $requestBodyInvalidVat)
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJson(['error' => 'Vat must be valid']);
+            ->assertJsonPath('error.message', 'Vat must be valid');
     }
 
     /** @test */
@@ -112,14 +112,16 @@ class CompanyTest extends TestCase
         $randomCompanyId = $this->faker->randomElement($company_ids);
 
         $company = $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->get($this->company_uri . '/' . $randomCompanyId)
+            ->getJson($this->company_uri . '/' . $randomCompanyId)
             ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure(['id', 'main_address', 'social_name', 'vat', 'is_active']);
+            ->assertJsonStructure([
+                'data' => ['id', 'main_address', 'social_name', 'vat', 'is_active'],
+            ]);
 
         $requestBody = [
             'fiscal_name' => $this->faker->name,
             'social_name' => $this->faker->company,
-            'vat' => $company->json()['vat'],
+            'vat' => $company->json('data.vat'),
             'is_active' => $this->faker->boolean,
             'main_address' => AddressFactory::new()->toArray(),
         ];
@@ -137,9 +139,9 @@ class CompanyTest extends TestCase
 //        unset($expectedResponse['addresses'][0]['id'], $expectedResponse['addresses'][1]['id']);
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->put($this->company_uri . '/' . $randomCompanyId, $requestBody)
+            ->putJson($this->company_uri . '/' . $randomCompanyId, $requestBody)
             ->assertStatus(Response::HTTP_OK)
-            ->assertJson($expectedResponse);
+            ->assertJson(['data' => $expectedResponse]);
 
         $requestBodyInvalidVat = [
             'fiscal_name' => $this->faker->name,
@@ -150,9 +152,9 @@ class CompanyTest extends TestCase
         ];
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->put($this->company_uri . '/' . $randomCompanyId, $requestBodyInvalidVat)
+            ->putJson($this->company_uri . '/' . $randomCompanyId, $requestBodyInvalidVat)
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJson(['error' => 'Vat must be valid']);
+            ->assertJsonPath('error.message', 'Vat must be valid');
     }
 
     /** @test */
@@ -163,11 +165,11 @@ class CompanyTest extends TestCase
         $randomCompanyId = $this->faker->randomElement($company_ids);
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->delete($this->company_uri . '/' . $randomCompanyId)
+            ->deleteJson($this->company_uri . '/' . $randomCompanyId)
             ->assertStatus(Response::HTTP_NO_CONTENT);
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->get($this->company_uri . '/' . $randomCompanyId)
+            ->getJson($this->company_uri . '/' . $randomCompanyId)
             ->assertStatus(Response::HTTP_NOT_FOUND);
     }
 
@@ -175,7 +177,7 @@ class CompanyTest extends TestCase
     public function cannot_delete_company_if_does_not_exists()
     {
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->delete($this->company_uri . '/' . 99999)
+            ->deleteJson($this->company_uri . '/' . 99999)
             ->assertStatus(Response::HTTP_NOT_FOUND);
     }
 
@@ -198,18 +200,21 @@ class CompanyTest extends TestCase
         ];
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->post($this->company_uri . '/' . $randomCompanyId . '/address', $requestBody)
+            ->postJson($this->company_uri . '/' . $randomCompanyId . '/address', $requestBody)
             ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure(['id', 'type', 'street', 'zip_code', 'city', 'country', 'phone', 'email']);
+            ->assertJsonStructure([
+                'data' => ['id', 'type', 'street', 'zip_code', 'city', 'country', 'phone', 'email'],
+            ]);
 
         $company = $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->get($this->company_uri . '/' . $randomCompanyId)
+            ->getJson($this->company_uri . '/' . $randomCompanyId)
             ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure(['id', 'fiscal_name', 'social_name', 'vat', 'addresses', 'contacts', 'departments', 'is_active']);
+            ->assertJsonStructure([
+                'data' => ['id', 'fiscal_name', 'social_name', 'vat', 'addresses', 'contacts', 'departments', 'is_active'],
+            ]);
 
-        $address = $company->json('addresses')[0];
-        unset($address['id']);
-        unset($address['company_id']);
+        $address = $company->json('data.addresses')[0];
+        unset($address['id'], $address['company_id']);
         $this->assertEquals($requestBody, $address);
     }
 
@@ -233,18 +238,21 @@ class CompanyTest extends TestCase
         ];
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->put($this->company_uri . '/' . $randomCompanyId . '/address/' . $address->id, $requestBody)
+            ->putJson($this->company_uri . '/' . $randomCompanyId . '/address/' . $address->id, $requestBody)
             ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure(['id', 'type', 'street', 'zip_code', 'city', 'country', 'phone', 'email']);
+            ->assertJsonStructure([
+                'data' => ['id', 'type', 'street', 'zip_code', 'city', 'country', 'phone', 'email'],
+            ]);
 
         $company = $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->get($this->company_uri . '/' . $randomCompanyId)
+            ->getJson($this->company_uri . '/' . $randomCompanyId)
             ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure(['id', 'fiscal_name', 'social_name', 'vat', 'addresses', 'contacts', 'departments', 'is_active']);
+            ->assertJsonStructure([
+                'data' => ['id', 'fiscal_name', 'social_name', 'vat', 'addresses', 'contacts', 'departments', 'is_active'],
+            ]);
 
-        $address = $company->json('addresses')[0];
-        unset($address['id']);
-        unset($address['company_id']);
+        $address = $company->json('data.addresses')[0];
+        unset($address['id'], $address['company_id']);
         $this->assertEquals($requestBody, $address);
     }
 
@@ -257,15 +265,17 @@ class CompanyTest extends TestCase
         $address = $this->createAddress($randomCompanyId);
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->delete($this->company_uri . '/' . $randomCompanyId . '/address/' . $address->id)
+            ->deleteJson($this->company_uri . '/' . $randomCompanyId . '/address/' . $address->id)
             ->assertStatus(Response::HTTP_NO_CONTENT);
 
         $company = $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->get($this->company_uri . '/' . $randomCompanyId)
+            ->getJson($this->company_uri . '/' . $randomCompanyId)
             ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure(['id', 'fiscal_name', 'social_name', 'vat', 'addresses', 'contacts', 'departments', 'is_active']);
+            ->assertJsonStructure([
+                'data' => ['id', 'fiscal_name', 'social_name', 'vat', 'addresses', 'contacts', 'departments', 'is_active'],
+            ]);
 
-        $addresses = $company->json('addresses');
+        $addresses = $company->json('data.addresses');
         $this->assertEquals([], $addresses);
     }
 
@@ -283,18 +293,21 @@ class CompanyTest extends TestCase
         ];
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->post($this->company_uri . '/' . $randomCompanyId . '/department', $requestBody)
+            ->postJson($this->company_uri . '/' . $randomCompanyId . '/department', $requestBody)
             ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure(['id', 'name', 'address_id', 'is_active']);
+            ->assertJsonStructure([
+                'data' => ['id', 'name', 'address_id', 'is_active'],
+            ]);
 
         $company = $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->get($this->company_uri . '/' . $randomCompanyId)
+            ->getJson($this->company_uri . '/' . $randomCompanyId)
             ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure(['id', 'fiscal_name', 'social_name', 'vat', 'addresses', 'contacts', 'departments', 'is_active']);
+            ->assertJsonStructure([
+                'data' => ['id', 'fiscal_name', 'social_name', 'vat', 'addresses', 'contacts', 'departments', 'is_active'],
+            ]);
 
-        $department = $company->json('departments')[0];
-        unset($department['id']);
-        unset($department['company_id']);
+        $department = $company->json('data.departments')[0];
+        unset($department['id'], $department['company_id']);
         $this->assertEquals($requestBody, $department);
     }
 
@@ -313,18 +326,21 @@ class CompanyTest extends TestCase
         ];
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->put($this->company_uri . '/' . $randomCompanyId . '/department/' . $department->id, $requestBody)
+            ->putJson($this->company_uri . '/' . $randomCompanyId . '/department/' . $department->id, $requestBody)
             ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure(['id', 'name', 'address_id', 'is_active']);
+            ->assertJsonStructure([
+                'data' => ['id', 'name', 'address_id', 'is_active'],
+            ]);
 
         $company = $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->get($this->company_uri . '/' . $randomCompanyId)
+            ->getJson($this->company_uri . '/' . $randomCompanyId)
             ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure(['id', 'fiscal_name', 'social_name', 'vat', 'addresses', 'contacts', 'departments', 'is_active']);
+            ->assertJsonStructure([
+                'data' => ['id', 'fiscal_name', 'social_name', 'vat', 'addresses', 'contacts', 'departments', 'is_active'],
+            ]);
 
-        $department = $company->json('departments')[0];
-        unset($department['id']);
-        unset($department['company_id']);
+        $department = $company->json('data.departments')[0];
+        unset($department['id'], $department['company_id']);
         $this->assertEquals($requestBody, $department);
     }
 
@@ -337,15 +353,17 @@ class CompanyTest extends TestCase
         $department = $this->createDepartment($randomCompanyId);
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->delete($this->company_uri . '/' . $randomCompanyId . '/department/' . $department->id)
+            ->deleteJson($this->company_uri . '/' . $randomCompanyId . '/department/' . $department->id)
             ->assertStatus(Response::HTTP_NO_CONTENT);
 
         $company = $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->get($this->company_uri . '/' . $randomCompanyId)
+            ->getJson($this->company_uri . '/' . $randomCompanyId)
             ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure(['id', 'fiscal_name', 'social_name', 'vat', 'addresses', 'contacts', 'departments', 'is_active']);
+            ->assertJsonStructure([
+                'data' => ['id', 'fiscal_name', 'social_name', 'vat', 'addresses', 'contacts', 'departments', 'is_active'],
+            ]);
 
-        $departments = $company->json('departments');
+        $departments = $company->json('data.departments');
         $this->assertEquals([], $departments);
     }
 
@@ -365,18 +383,21 @@ class CompanyTest extends TestCase
         ];
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->post($this->company_uri . '/' . $randomCompanyId . '/contact', $requestBody)
+            ->postJson($this->company_uri . '/' . $randomCompanyId . '/contact', $requestBody)
             ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure(['id', 'contact_role', 'name', 'email', 'phone', 'address_id']);
+            ->assertJsonStructure([
+                'data' => ['id', 'contact_role', 'name', 'email', 'phone', 'address_id'],
+            ]);
 
         $company = $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->get($this->company_uri . '/' . $randomCompanyId)
+            ->getJson($this->company_uri . '/' . $randomCompanyId)
             ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure(['id', 'fiscal_name', 'social_name', 'vat', 'addresses', 'contacts', 'departments', 'is_active']);
+            ->assertJsonStructure([
+                'data' => ['id', 'fiscal_name', 'social_name', 'vat', 'addresses', 'contacts', 'departments', 'is_active'],
+            ]);
 
-        $contact = $company->json('contacts')[0];
-        unset($contact['id']);
-        unset($contact['company_id']);
+        $contact = $company->json('data.contacts')[0];
+        unset($contact['id'], $contact['company_id']);
         $this->assertEquals($requestBody, $contact);
     }
 
@@ -397,18 +418,21 @@ class CompanyTest extends TestCase
         ];
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->put($this->company_uri . '/' . $randomCompanyId . '/contact/' . $contact->id, $requestBody)
+            ->putJson($this->company_uri . '/' . $randomCompanyId . '/contact/' . $contact->id, $requestBody)
             ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure(['id', 'contact_role', 'name', 'email', 'phone', 'address_id']);
+            ->assertJsonStructure([
+                'data' => ['id', 'contact_role', 'name', 'email', 'phone', 'address_id'],
+            ]);
 
         $company = $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->get($this->company_uri . '/' . $randomCompanyId)
+            ->getJson($this->company_uri . '/' . $randomCompanyId)
             ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure(['id', 'fiscal_name', 'social_name', 'vat', 'addresses', 'contacts', 'departments', 'is_active']);
+            ->assertJsonStructure([
+                'data' => ['id', 'fiscal_name', 'social_name', 'vat', 'addresses', 'contacts', 'departments', 'is_active'],
+            ]);
 
-        $contact = $company->json('contacts')[0];
-        unset($contact['id']);
-        unset($contact['company_id']);
+        $contact = $company->json('data.contacts')[0];
+        unset($contact['id'], $contact['company_id']);
         $this->assertEquals($requestBody, $contact);
     }
 
@@ -421,15 +445,17 @@ class CompanyTest extends TestCase
         $contact = $this->createContact($randomCompanyId);
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->delete($this->company_uri . '/' . $randomCompanyId . '/contact/' . $contact->id)
+            ->deleteJson($this->company_uri . '/' . $randomCompanyId . '/contact/' . $contact->id)
             ->assertStatus(Response::HTTP_NO_CONTENT);
 
         $company = $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->get($this->company_uri . '/' . $randomCompanyId)
+            ->getJson($this->company_uri . '/' . $randomCompanyId)
             ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure(['id', 'fiscal_name', 'social_name', 'vat', 'addresses', 'contacts', 'departments', 'is_active']);
+            ->assertJsonStructure([
+                'data' => ['id', 'fiscal_name', 'social_name', 'vat', 'addresses', 'contacts', 'departments', 'is_active'],
+            ]);
 
-        $contacts = $company->json('contacts');
+        $contacts = $company->json('data.contacts');
         $this->assertEquals([], $contacts);
     }
 
@@ -442,8 +468,8 @@ class CompanyTest extends TestCase
         $this->createRandomCompanies($companiesCount);
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->userToken])
-            ->get($this->index_uri)
-            ->assertStatus(Response::HTTP_UNAUTHORIZED)
+            ->getJson($this->index_uri)
+            ->assertStatus(Response::HTTP_FORBIDDEN)
             ->assertSee(['error' => 'The user is not authorized to access this resource or perform this action']);
     }
 
@@ -456,15 +482,17 @@ class CompanyTest extends TestCase
 
         // User cannot retrieve company where it is not belonged to
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->userToken])
-            ->get($this->company_uri . '/' . $randomCompanyId)
-            ->assertStatus(Response::HTTP_UNAUTHORIZED)
+            ->getJson($this->company_uri . '/' . $randomCompanyId)
+            ->assertStatus(Response::HTTP_FORBIDDEN)
             ->assertSee(['error' => 'The user is not authorized to access this resource or perform this action']);
 
         // User can retrieve company where it belongs
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->userToken])
-            ->get($this->company_uri . '/' . $this->userData['company_id'])
+            ->getJson($this->company_uri . '/' . $this->userData['company_id'])
             ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure(['id', 'fiscal_name', 'social_name', 'vat', 'is_active']);
+            ->assertJsonStructure([
+                'data' => ['id', 'fiscal_name', 'social_name', 'vat', 'is_active'],
+            ]);
     }
 
     /** @test */
@@ -479,8 +507,8 @@ class CompanyTest extends TestCase
         ];
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->userToken])
-            ->post($this->company_uri, $requestBody)
-            ->assertStatus(Response::HTTP_UNAUTHORIZED)
+            ->postJson($this->company_uri, $requestBody)
+            ->assertStatus(Response::HTTP_FORBIDDEN)
             ->assertSee(['error' => 'The user is not authorized to access this resource or perform this action']);
     }
 
@@ -492,9 +520,11 @@ class CompanyTest extends TestCase
         $randomCompanyId = $this->faker->randomElement($company_ids);
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->get($this->company_uri . '/' . $randomCompanyId)
+            ->getJson($this->company_uri . '/' . $randomCompanyId)
             ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure(['id', 'fiscal_name', 'social_name', 'vat', 'is_active']);
+            ->assertJsonStructure([
+                'data' => ['id', 'fiscal_name', 'social_name', 'vat', 'is_active'],
+            ]);
 
         $requestBody = [
             'fiscal_name' => $this->faker->name,
@@ -505,8 +535,8 @@ class CompanyTest extends TestCase
         ];
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->userToken])
-            ->put($this->company_uri . '/' . $randomCompanyId, $requestBody)
-            ->assertStatus(Response::HTTP_UNAUTHORIZED)
+            ->putJson($this->company_uri . '/' . $randomCompanyId, $requestBody)
+            ->assertStatus(Response::HTTP_FORBIDDEN)
             ->assertSee(['error' => 'The user is not authorized to access this resource or perform this action']);
     }
 
@@ -518,8 +548,8 @@ class CompanyTest extends TestCase
         $randomCompanyId = $this->faker->randomElement($company_ids);
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->userToken])
-            ->delete($this->company_uri . '/' . $randomCompanyId)
-            ->assertStatus(Response::HTTP_UNAUTHORIZED)
+            ->deleteJson($this->company_uri . '/' . $randomCompanyId)
+            ->assertStatus(Response::HTTP_FORBIDDEN)
             ->assertSee(['error' => 'The user is not authorized to access this resource or perform this action']);
     }
 }
