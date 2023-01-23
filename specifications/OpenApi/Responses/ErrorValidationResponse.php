@@ -5,7 +5,7 @@ namespace Specifications\OpenApi\Responses;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use Vyuldashev\LaravelOpenApi\Contracts\Reusable;
 
-class ErrorValidationResponse extends ResponseFactory implements Reusable
+class ErrorValidationResponse extends ErrorResponseFactory implements Reusable
 {
     protected ?string $id = 'ErrorValidation';
 
@@ -13,11 +13,13 @@ class ErrorValidationResponse extends ResponseFactory implements Reusable
 
     protected string $description = 'Validation error';
 
-    protected string $status = 'fail';
+    protected string $errorMessage = 'The given data was invalid.';
 
-    public function definition(): array
+    public function additionalProperties(): array
     {
-        return [];
+        return [
+            $this->multipleOf($this->error('G', 'VALIDATION', $this->errorMessage), [], 'errors'),
+        ];
     }
 
     protected function mutateSchema(array $definition): array

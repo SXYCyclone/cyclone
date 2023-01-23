@@ -5,7 +5,7 @@ namespace Src\Common\Infrastructure\Laravel\Providers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\ServiceProvider;
-use Symfony\Component\HttpFoundation\Response as HttpResponse;
+use Jiannei\Response\Laravel\Support\Facades\Response as JianneiResponse;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,35 +27,26 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         $responseMacros = [
-            'success' => function ($data = [], $status = HttpResponse::HTTP_OK, $extraHeaders = []): JsonResponse {
+            'success' => function ($data = [], $message = '', $code = 200, $headers = [], $option = 0): JsonResponse {
                 if ($data instanceof \JsonSerializable) {
                     $data = $data->jsonSerialize();
                 }
-                $response = [
-                    "status" => "success",
-                    "data" => $data,
-                ];
 
-                return response()->json($response, $status, $extraHeaders);
+                return JianneiResponse::success($data, $message, $code, $headers, $option);
             },
-            'fail' => function ($data, $status = HttpResponse::HTTP_BAD_REQUEST, $extraHeaders = []): JsonResponse {
-                $response = [
-                    "status" => "fail",
-                    "data" => $data,
-                ];
-
-                return response()->json($response, $status, $extraHeaders);
+            'fail' => function ($message = '', $code = 500, $errors = null, $header = [], $options = 0): JsonResponse {
+                return JianneiResponse::fail($message, $code, $errors, $header, $options);
             },
-            'error' => function ($message, $code = null, $data = null, $status = HttpResponse::HTTP_INTERNAL_SERVER_ERROR, $extraHeaders = []): JsonResponse {
-                $response = [
-                    "status" => "error",
-                    "message" => $message,
-                ];
-                !is_null($code) && $response['code'] = $code;
-                !is_null($data) && $response['data'] = $data;
-
-                return response()->json($response, $status, $extraHeaders);
-            },
+//            'error' => function ($message, $code = null, $data = null, $status = HttpResponse::HTTP_INTERNAL_SERVER_ERROR, $extraHeaders = []): JsonResponse {
+//                $response = [
+//                    "status" => "error",
+//                    "message" => $message,
+//                ];
+//                !is_null($code) && $response['code'] = $code;
+//                !is_null($data) && $response['data'] = $data;
+//
+//                return response()->json($response, $status, $extraHeaders);
+//            },
         ];
 
         foreach ($responseMacros as $macro => $callback) {
