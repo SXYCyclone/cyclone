@@ -2,10 +2,15 @@
 
 namespace Src\Agenda\User\Application\Exceptions;
 
-final class EmailAlreadyUsedException extends \DomainException
+use Illuminate\Http\Response;
+use Src\Agenda\User\Domain\Exceptions\UserDomainException;
+
+final class EmailAlreadyUsedException extends UserDomainException
 {
+    public int $httpCode = Response::HTTP_UNPROCESSABLE_ENTITY;
+
     public function __construct()
     {
-        parent::__construct('El email ya está en uso');
+        parent::__construct('The email is already in use');
     }
 }

@@ -32,9 +32,9 @@ class UserTest extends TestCase
         $this->createRandomUsers($numberUsers);
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->get($this->index_uri)
+            ->getJson($this->index_uri)
             ->assertStatus(Response::HTTP_OK)
-            ->assertJsonCount($numberUsers + 2); // +2 because of the admin and user + 2 because of seeded users
+            ->assertJsonCount($numberUsers + 2, 'data.items'); // +2 because of the admin and user + 2 because of seeded users
     }
 
     /** @test */
@@ -45,9 +45,9 @@ class UserTest extends TestCase
         $randomUserId = $this->faker->randomElement($user_ids);
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->get($this->user_uri . '/' . $randomUserId)
+            ->getJson($this->user_uri . '/' . $randomUserId)
             ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure(['id', 'name', 'email', 'avatar', 'is_admin', 'is_active']);
+            ->assertJsonStructure(['data' => ['id', 'name', 'email', 'avatar', 'is_admin', 'is_active']]);
     }
 
     /** @test */
@@ -74,15 +74,15 @@ class UserTest extends TestCase
         ];
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->post($this->user_uri, $requestBody)
+            ->postJson($this->user_uri, $requestBody)
             ->assertStatus(Response::HTTP_CREATED)
-            ->assertJson($expectedResponse);
+            ->assertJson(['data' => $expectedResponse]);
 
         // Assert cannot create user with same email
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->post($this->user_uri, $requestBody)
+            ->postJson($this->user_uri, $requestBody)
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJson(['error' => 'El email ya está en uso']);
+            ->assertJsonPath('error.message', 'The email is already in use');
     }
 
     /** @test */
@@ -100,9 +100,9 @@ class UserTest extends TestCase
         ];
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->post($this->user_uri, $requestBodyInvalidEmail)
+            ->postJson($this->user_uri, $requestBodyInvalidEmail)
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJson(['error' => 'Must be a valid email']);
+            ->assertJsonPath('error.message', 'Must be a valid email');
     }
 
     /** @test */
@@ -122,16 +122,16 @@ class UserTest extends TestCase
         $requestBodyInvalidPassword = $requestBody;
         $requestBodyInvalidPassword['password'] = '1234';
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->post($this->user_uri, $requestBodyInvalidPassword)
+            ->postJson($this->user_uri, $requestBodyInvalidPassword)
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJson(['error' => 'The password needs to be at least 8 characters long']);
+            ->assertJsonPath('error.message', 'The password needs to be at least 8 characters long');
 
         $requestBodyNoPasswordConfirmation = $requestBody;
         unset($requestBodyNoPasswordConfirmation['password_confirmation']);
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->post($this->user_uri, $requestBodyNoPasswordConfirmation)
+            ->postJson($this->user_uri, $requestBodyNoPasswordConfirmation)
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJson(['error' => 'Passwords do not match']);
+            ->assertJsonPath('error.message', 'Passwords do not match');
     }
 
     /** @test */
@@ -162,9 +162,9 @@ class UserTest extends TestCase
         ];
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->put($this->user_uri . '/' . $randomUserId, $requestBody)
+            ->putJson($this->user_uri . '/' . $randomUserId, $requestBody)
             ->assertStatus(Response::HTTP_OK)
-            ->assertJson($expectedResponse);
+            ->assertJson(['data' => $expectedResponse]);
     }
 
     /** @test */
@@ -188,16 +188,16 @@ class UserTest extends TestCase
         $requestBodyInvalidPassword = $requestBody;
         $requestBodyInvalidPassword['password'] = '1234';
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->put($this->user_uri . '/' . $randomUserId, $requestBodyInvalidPassword)
+            ->putJson($this->user_uri . '/' . $randomUserId, $requestBodyInvalidPassword)
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJson(['error' => 'The password needs to be at least 8 characters long']);
+            ->assertJsonPath('error.message', 'The password needs to be at least 8 characters long');
 
         $requestBodyNoPasswordConfirmation = $requestBody;
         unset($requestBodyNoPasswordConfirmation['password_confirmation']);
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->put($this->user_uri . '/' . $randomUserId, $requestBodyNoPasswordConfirmation)
+            ->putJson($this->user_uri . '/' . $randomUserId, $requestBodyNoPasswordConfirmation)
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJson(['error' => 'Passwords do not match']);
+            ->assertJsonPath('error.message', 'Passwords do not match');
     }
 
     /** @test */
@@ -208,11 +208,11 @@ class UserTest extends TestCase
         $randomUserId = $this->faker->randomElement($user_ids);
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->delete($this->user_uri . '/' . $randomUserId)
+            ->deleteJson($this->user_uri . '/' . $randomUserId)
             ->assertStatus(Response::HTTP_NO_CONTENT);
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->get($this->user_uri . '/' . $randomUserId)
+            ->getJson($this->user_uri . '/' . $randomUserId)
             ->assertStatus(Response::HTTP_NOT_FOUND);
     }
 
@@ -220,7 +220,7 @@ class UserTest extends TestCase
     public function cannot_delete_user_if_does_not_exists()
     {
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->delete($this->user_uri . '/' . 999)
+            ->deleteJson($this->user_uri . '/' . 999)
             ->assertStatus(Response::HTTP_NOT_FOUND);
     }
 
@@ -239,7 +239,7 @@ class UserTest extends TestCase
         });
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
-            ->get($this->random_avatar_uri)
+            ->getJson($this->random_avatar_uri)
             ->assertStatus(Response::HTTP_OK)
             ->assertSee('data:image\/png;base64,' . base64_encode($binaryDataStr));
     }
@@ -252,8 +252,8 @@ class UserTest extends TestCase
         $this->createRandomUsers($numberUsers);
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->userToken])
-            ->get($this->index_uri)
-            ->assertStatus(Response::HTTP_UNAUTHORIZED)
+            ->getJson($this->index_uri)
+            ->assertStatus(Response::HTTP_FORBIDDEN)
             ->assertSee(['error' => 'The user is not authorized to access this resource or perform this action']);
     }
 
@@ -265,8 +265,8 @@ class UserTest extends TestCase
         $randomUserId = $this->faker->randomElement($user_ids);
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->userToken])
-            ->get($this->user_uri . '/' . $randomUserId)
-            ->assertStatus(Response::HTTP_UNAUTHORIZED)
+            ->getJson($this->user_uri . '/' . $randomUserId)
+            ->assertStatus(Response::HTTP_FORBIDDEN)
             ->assertSee(['error' => 'The user is not authorized to access this resource or perform this action']);
     }
 
@@ -285,8 +285,8 @@ class UserTest extends TestCase
         ];
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->userToken])
-            ->post($this->user_uri, $requestBody)
-            ->assertStatus(Response::HTTP_UNAUTHORIZED)
+            ->postJson($this->user_uri, $requestBody)
+            ->assertStatus(Response::HTTP_FORBIDDEN)
             ->assertSee(['error' => 'The user is not authorized to access this resource or perform this action']);
     }
 
@@ -310,8 +310,8 @@ class UserTest extends TestCase
         ];
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->userToken])
-            ->put($this->user_uri . '/' . $randomUserId, $requestBody)
-            ->assertStatus(Response::HTTP_UNAUTHORIZED)
+            ->putJson($this->user_uri . '/' . $randomUserId, $requestBody)
+            ->assertStatus(Response::HTTP_FORBIDDEN)
             ->assertSee(['error' => 'The user is not authorized to access this resource or perform this action']);
 
         // Update itself
@@ -335,9 +335,9 @@ class UserTest extends TestCase
         ];
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->userToken])
-            ->put($this->user_uri . '/' . $this->userData['id'], $requestBody)
+            ->putJson($this->user_uri . '/' . $this->userData['id'], $requestBody)
             ->assertStatus(Response::HTTP_OK)
-            ->assertJson($expectedResponse);
+            ->assertJson(['data' => $expectedResponse]);
     }
 
     /** @test */
@@ -348,8 +348,8 @@ class UserTest extends TestCase
         $randomUserId = $this->faker->randomElement($user_ids);
 
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->userToken])
-            ->delete($this->user_uri . '/' . $randomUserId)
-            ->assertStatus(Response::HTTP_UNAUTHORIZED)
+            ->deleteJson($this->user_uri . '/' . $randomUserId)
+            ->assertStatus(Response::HTTP_FORBIDDEN)
             ->assertSee(['error' => 'The user is not authorized to access this resource or perform this action']);
     }
 }
