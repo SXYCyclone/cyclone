@@ -7,20 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Src\Agenda\Company\Infrastructure\EloquentModels\CompanyEloquentModel
  *
- * @property int $id
- * @property string $fiscal_name
- * @property string $social_name
- * @property string $vat
- * @property bool $is_active
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\Src\Agenda\Company\Infrastructure\EloquentModels\AddressEloquentModel[] $addresses
- * @property-read int|null $addresses_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\Src\Agenda\Company\Infrastructure\EloquentModels\ContactEloquentModel[] $contacts
- * @property-read int|null $contacts_count
+ * @property int                                                                                                                       $id
+ * @property string                                                                                                                    $fiscal_name
+ * @property string                                                                                                                    $social_name
+ * @property string                                                                                                                    $vat
+ * @property bool                                                                                                                      $is_active
+ * @property \Illuminate\Support\Carbon|null                                                                                           $created_at
+ * @property \Illuminate\Support\Carbon|null                                                                                           $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Src\Agenda\Company\Infrastructure\EloquentModels\AddressEloquentModel[]    $addresses
+ * @property-read int|null                                                                                                             $addresses_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Src\Agenda\Company\Infrastructure\EloquentModels\ContactEloquentModel[]    $contacts
+ * @property-read int|null                                                                                                             $contacts_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\Src\Agenda\Company\Infrastructure\EloquentModels\DepartmentEloquentModel[] $departments
- * @property-read int|null $departments_count
- * @property-read mixed $main_address
+ * @property-read int|null                                                                                                             $departments_count
+ * @property-read mixed                                                                                                                $main_address
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyEloquentModel newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyEloquentModel newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyEloquentModel query()

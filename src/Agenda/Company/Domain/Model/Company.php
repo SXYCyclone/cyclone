@@ -14,18 +14,19 @@ use Src\Agenda\Company\Domain\Model\ValueObjects\FiscalName;
 use Src\Agenda\Company\Domain\Model\ValueObjects\SocialName;
 use Src\Agenda\Company\Domain\Model\ValueObjects\Vat;
 use Src\Common\Domain\AggregateRoot;
+use Tenancy\Identification\Contracts\Tenant;
 
-class Company extends AggregateRoot
+class Company extends AggregateRoot implements Tenant
 {
     public function __construct(
-        public readonly ?int $id,
-        public readonly FiscalName $fiscal_name,
-        public readonly SocialName $social_name,
-        public readonly Vat $vat,
-        public readonly Addresses $addresses,
+        public readonly ?int        $id,
+        public readonly FiscalName  $fiscal_name,
+        public readonly SocialName  $social_name,
+        public readonly Vat         $vat,
+        public readonly Addresses   $addresses,
         public readonly Departments $departments,
-        public readonly Contacts $contacts,
-        public readonly bool $is_active = true
+        public readonly Contacts    $contacts,
+        public readonly bool        $is_active = true
     ) {
     }
 
@@ -33,10 +34,12 @@ class Company extends AggregateRoot
     {
         $this->addresses->add($address);
     }
+
     public function updateAddress(Address $newAddress): void
     {
         $this->addresses->update($newAddress);
     }
+
     public function removeAddress(int $address_id): void
     {
         $this->addresses->remove($address_id);
@@ -46,6 +49,7 @@ class Company extends AggregateRoot
     {
         return $this->addresses->getMainAddress();
     }
+
     public function getOtherAddresses(): Addresses
     {
         return $this->addresses->getOtherAddresses();
@@ -55,10 +59,12 @@ class Company extends AggregateRoot
     {
         $this->departments->add($department);
     }
+
     public function updateDepartment(Department $newDepartment): void
     {
         $this->departments->update($newDepartment);
     }
+
     public function removeDepartment(int $department_id): void
     {
         $this->departments->remove($department_id);
@@ -68,13 +74,30 @@ class Company extends AggregateRoot
     {
         $this->contacts->add($contact);
     }
+
     public function updateContact(Contact $newContact): void
     {
         $this->contacts->update($newContact);
     }
+
     public function removeContact(int $contact_id): void
     {
         $this->contacts->remove($contact_id);
+    }
+
+    public function getTenantKeyName(): string
+    {
+        return 'id';
+    }
+
+    public function getTenantKey(): int|string
+    {
+        return $this->id;
+    }
+
+    public function getTenantIdentifier(): string
+    {
+        return 'company';
     }
 
     public function toArray(): array

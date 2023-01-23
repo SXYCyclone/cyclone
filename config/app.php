@@ -185,6 +185,7 @@ return [
         /*
          * Package Service Providers...
          */
+        \Tenancy\Affects\Connections\Provider::class,
 
         /*
          * Domain Service Providers...

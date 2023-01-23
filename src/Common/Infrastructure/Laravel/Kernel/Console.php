@@ -9,6 +9,7 @@ use Src\Common\Presentation\CLI\CreateControllerCmd;
 use Src\Common\Presentation\CLI\CreateDomainCmd;
 use Src\Common\Presentation\CLI\CreateQueryCmd;
 use Src\Common\Presentation\CLI\CreateRoutesCmd;
+use Src\Common\Presentation\CLI\PlayCmd;
 use Src\Common\Presentation\CLI\SyncOpenApiSchemaCmd;
 
 class Console extends ConsoleKernel
@@ -25,6 +26,7 @@ class Console extends ConsoleKernel
         CreateControllerCmd::class,
         CreateRoutesCmd::class,
         SyncOpenApiSchemaCmd::class,
+        PlayCmd::class,
     ];
 
     /**
