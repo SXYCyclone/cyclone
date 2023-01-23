@@ -14,7 +14,7 @@ abstract class RequestBodyFactory extends BaseRequestBodyFactory
     {
         $request = RequestBody::create();
         $definition = $this->definition();
-        $content = MediaType::json()->schema(
+        $content = MediaType::formUrlEncoded()->schema(
             Schema::object()->properties(
                 ...$definition
             )

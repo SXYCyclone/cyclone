@@ -2,24 +2,23 @@
 
 namespace Specifications\OpenApi\Responses;
 
-use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use Vyuldashev\LaravelOpenApi\Contracts\Reusable;
-use Vyuldashev\LaravelOpenApi\Factories\ResponseFactory;
 
 class ErrorAuthenticationResponse extends ResponseFactory implements Reusable
 {
-    public function build(): Response
-    {
-        $response = Schema::object()->properties(
-            Schema::string('error')->example('Unauthorized'),
-        );
+    protected ?string $id = 'ErrorAuthentication';
 
-        return Response::create('ErrorAuthentication')
-            ->description('Authentication error')
-            ->content(
-                MediaType::json()->schema($response)
-            );
+    protected int $statusCode = \Symfony\Component\HttpFoundation\Response::HTTP_UNAUTHORIZED;
+
+    protected string $description = 'Authentication error';
+
+    protected string $status = 'fail';
+
+    public function definition(): array
+    {
+        return [
+            Schema::string('error')->example('Unauthorized'),
+        ];
     }
 }
