@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ed7529d2482619b5d26044e546ef5bbd",
+    "content-hash": "210ed5d9720c14faea3b425527678d1b",
     "packages": [
         {
             "name": "brick/math",
@@ -1294,6 +1294,62 @@
                 }
             ],
             "time": "2022-10-26T14:07:24+00:00"
+        },
+        {
+            "name": "jiannei/laravel-response",
+            "version": "v5.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jiannei/laravel-response.git",
+                "reference": "827b19e22c1eaa07b5234e5927b7bab8e8a3fd9c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jiannei/laravel-response/zipball/827b19e22c1eaa07b5234e5927b7bab8e8a3fd9c",
+                "reference": "827b19e22c1eaa07b5234e5927b7bab8e8a3fd9c",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": "^7.2.5|^8.0"
+            },
+            "require-dev": {
+                "jiannei/laravel-enum": "^3.0",
+                "orchestra/testbench": "^7.0",
+                "phpunit/phpunit": "^9.5.10"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Jiannei\\Response\\Laravel\\Providers\\LaravelServiceProvider"
+                    ],
+                    "aliases": {
+                        "Response": "Jiannei\\Response\\Laravel\\Support\\Facades\\Response"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Jiannei\\Response\\Laravel\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "jiannei",
+                    "email": "longjian.huang@foxmail.com"
+                }
+            ],
+            "description": "Laravel api response data format.",
+            "support": {
+                "issues": "https://github.com/jiannei/laravel-response/issues",
+                "source": "https://github.com/jiannei/laravel-response/tree/v5.1.1"
+            },
+            "time": "2023-01-03T03:44:08+00:00"
         },
         {
             "name": "laravel/framework",
@@ -3714,60 +3770,6 @@
                 }
             ],
             "time": "2023-01-12T18:13:24+00:00"
-        },
-        {
-            "name": "shalvah/laravel-jsend",
-            "version": "2.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/shalvah/laravel-jsend.git",
-                "reference": "11e6d0968a86a3a3744e7e58b53f8a490f067397"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/shalvah/laravel-jsend/zipball/11e6d0968a86a3a3744e7e58b53f8a490f067397",
-                "reference": "11e6d0968a86a3a3744e7e58b53f8a490f067397",
-                "shasum": ""
-            },
-            "require": {
-                "laravel/framework": "^7.0|^8.0|^9.0",
-                "php": ">=7.2.5"
-            },
-            "require-dev": {
-                "orchestra/testbench": "^5.0|^6.0",
-                "phpunit/phpunit": "^8.0"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "src/helpers.php"
-                ],
-                "psr-4": {
-                    "Shalvah\\LaravelJsend\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Shalvah Adebayo",
-                    "email": "shalvah.adebayo@gmail.com"
-                }
-            ],
-            "description": "Laravel helpers to easily send JSend-compliant responses",
-            "homepage": "http://shalvah.me/laravel-jsend",
-            "keywords": [
-                "jsend",
-                "json",
-                "laravel"
-            ],
-            "support": {
-                "issues": "https://github.com/shalvah/laravel-jsend/issues",
-                "source": "https://github.com/shalvah/laravel-jsend"
-            },
-            "time": "2022-03-22T18:20:33+00:00"
         },
         {
             "name": "stella-maris/clock",
