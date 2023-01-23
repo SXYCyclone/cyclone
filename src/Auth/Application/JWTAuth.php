@@ -6,9 +6,9 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Log;
 use Src\Agenda\User\Application\Mappers\UserMapper;
 use Src\Agenda\User\Domain\Model\User;
-use Src\Agenda\User\Domain\Repositories\AvatarRepositoryInterface;
 use Src\Agenda\User\Infrastructure\EloquentModels\UserEloquentModel;
 use Src\Auth\Domain\AuthInterface;
+use Src\Auth\Domain\Exceptions\CredentialsInvalidException;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth as TymonJWTAuth;
 
@@ -23,9 +23,11 @@ class JWTAuth implements AuthInterface
     {
         $user = UserEloquentModel::query()->where('email', $credentials['email'])->first();
         if (!$user || !$user->is_active) {
-            throw new AuthenticationException();
-        } elseif (!$token = auth()->attempt($credentials)) {
-            throw new AuthenticationException();
+            throw new CredentialsInvalidException('User not found or inactive');
+        }
+
+        if (!$token = auth()->attempt($credentials)) {
+            throw new CredentialsInvalidException();
         }
         return $token;
     }

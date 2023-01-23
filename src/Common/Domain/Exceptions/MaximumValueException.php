@@ -2,7 +2,7 @@
 
 namespace Src\Common\Domain\Exceptions;
 
-final class MaximumValueException extends \DomainException
+final class MaximumValueException extends CommonDomainException
 {
     public function __construct($fieldName, $value)
     {

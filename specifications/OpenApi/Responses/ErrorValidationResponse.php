@@ -2,7 +2,6 @@
 
 namespace Specifications\OpenApi\Responses;
 
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use Vyuldashev\LaravelOpenApi\Contracts\Reusable;
 
 class ErrorValidationResponse extends ErrorResponseFactory implements Reusable
@@ -18,20 +17,20 @@ class ErrorValidationResponse extends ErrorResponseFactory implements Reusable
     public function additionalProperties(): array
     {
         return [
-            $this->multipleOf($this->error('G', 'VALIDATION', $this->errorMessage), [], 'errors'),
+            $this->multipleOf($this->error('app.validation', 'INVALID_FAILED', $this->errorMessage), [
+                [
+                    'domain' => 'app.validation',
+                    'reason' => 'VALIDATION_FAILED',
+                    'message' => 'The given data was invalid.',
+                ],
+                [
+                    'domain' => 'app.validation',
+                    'reason' => 'INVALID_FIELD',
+                    'location_type' => 'field',
+                    'location' => 'field',
+                    'message' => 'The field is invalid.',
+                ],
+            ], 'errors'),
         ];
-    }
-
-    protected function mutateSchema(array $definition): array
-    {
-        foreach ($definition as &$schema) {
-            /** @var Schema $schema */
-            if ($schema->objectId === 'data') {
-                $schema = Schema::object('data')
-                    ->additionalProperties(Schema::array()->items(Schema::string()))
-                    ->example(['field' => ['The field is required.']]);
-            }
-        }
-        return $definition;
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Src\Common\Domain\Exceptions;
 
-class EntityNotFoundException extends \DomainException
+class EntityNotFoundException extends CommonDomainException
 {
     public function __construct(string $message = 'Entity not found')
     {

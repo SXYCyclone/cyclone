@@ -2,7 +2,7 @@
 
 namespace Src\Common\Domain\Exceptions;
 
-final class RequiredException extends \DomainException
+final class RequiredException extends CommonDomainException
 {
     public function __construct($fieldName)
     {

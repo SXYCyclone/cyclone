@@ -54,19 +54,19 @@ class LoginTest extends TestCase
     {
         $credentials = $this->validCredentials(['is_active' => false]);
 
-        $this->post($this->login_uri, $credentials)
+        $this->postJson($this->login_uri, $credentials)
             ->assertSessionHasNoErrors()
             ->assertStatus(Response::HTTP_UNAUTHORIZED)
-            ->assertSee(['error' => 'Unauthorized']);
+            ->assertJsonPath('error.message', 'Failed to log in');
     }
 
     /** @test */
     public function user_can_not_login_without_credentials()
     {
-        $this->post($this->login_uri, [])
-            ->assertStatus(Response::HTTP_BAD_REQUEST)
+        $this->postJson($this->login_uri, [])
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertSee([
-                'email'    => 'The email field is required.',
+                'email' => 'The email field is required.',
                 'password' => 'The password field is required.',
             ]);
     }
@@ -77,8 +77,8 @@ class LoginTest extends TestCase
         $credentials = $this->validCredentials();
         unset($credentials['email']);
 
-        $this->post($this->login_uri, $credentials)
-            ->assertStatus(Response::HTTP_BAD_REQUEST)
+        $this->postJson($this->login_uri, $credentials)
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertSee([
                 'email' => 'The email field is required.',
             ]);
@@ -90,8 +90,8 @@ class LoginTest extends TestCase
         $credentials = $this->validCredentials();
         unset($credentials['password']);
 
-        $this->post($this->login_uri, $credentials)
-            ->assertStatus(Response::HTTP_BAD_REQUEST)
+        $this->postJson($this->login_uri, $credentials)
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertSee([
                 'password' => 'The password field is required.',
             ]);
@@ -104,7 +104,7 @@ class LoginTest extends TestCase
 
         $this->post($this->login_uri, $credentials)
             ->assertStatus(Response::HTTP_UNAUTHORIZED)
-            ->assertSee(['error' => 'Unauthorized']);
+            ->assertJsonPath('error.message', 'Failed to log in');
     }
 
     /** @test */
@@ -139,7 +139,7 @@ class LoginTest extends TestCase
         // The previous token should be invalid.
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])->post($this->refresh_uri)
             ->assertStatus(Response::HTTP_FORBIDDEN)
-            ->assertSee(['status']);
+            ->assertSee(['error']);
 
         // The new token should be valid.
         $this->withHeaders(['Authorization' => 'Bearer ' . $newToken])->get($this->me_uri)

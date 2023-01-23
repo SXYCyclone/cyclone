@@ -2,7 +2,7 @@
 
 namespace Src\Common\Domain\Exceptions;
 
-final class IncorrectEmailFormatException extends \DomainException
+final class IncorrectEmailFormatException extends CommonDomainException
 {
     public function __construct()
     {

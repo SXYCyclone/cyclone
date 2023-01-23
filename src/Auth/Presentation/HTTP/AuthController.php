@@ -5,15 +5,17 @@ namespace Src\Auth\Presentation\HTTP;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Specifications\OpenApi\RequestBodies\Auth\LoginRequestBody;
+use Specifications\OpenApi\Responses\Auth\CurrentUserResponse;
+use Specifications\OpenApi\Responses\Auth\TokenInvalidatedResponse;
 use Specifications\OpenApi\Responses\Auth\TokenIssuedResponse;
 use Specifications\OpenApi\Responses\ErrorAuthenticationResponse;
 use Specifications\OpenApi\Responses\ErrorValidationResponse;
 use Src\Auth\Domain\AuthInterface;
 use Src\Common\Infrastructure\Laravel\Controller;
-use Symfony\Component\HttpFoundation\Response;
 use Vyuldashev\LaravelOpenApi\Attributes as OpenApi;
 
 #[OpenApi\PathItem]
@@ -53,10 +55,8 @@ class AuthController extends Controller
             }
             $token = $this->auth->login($credentials);
             return $this->respondWithToken($token);
-        } catch (ValidationException $validationException) {
-            return response()->json($validationException->errors(), Response::HTTP_BAD_REQUEST);
         } catch (AuthenticationException) {
-            return response()->json(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
+            return Response::fail('Failed to log in', Response::HTTP_UNAUTHORIZED);
         }
     }
 
@@ -65,9 +65,12 @@ class AuthController extends Controller
      *
      * @return JsonResponse
      */
+    #[OpenApi\Operation(tags: ['auth'])]
+    #[OpenApi\Response(factory: CurrentUserResponse::class)]
+    #[OpenApi\Response(factory: ErrorAuthenticationResponse::class, statusCode: 401)]
     public function me(): JsonResponse
     {
-        return response()->json($this->auth->me()->toArray());
+        return Response::success($this->auth->me()->toArray());
     }
 
     /**
@@ -75,10 +78,12 @@ class AuthController extends Controller
      *
      * @return JsonResponse
      */
+    #[OpenApi\Operation(tags: ['auth'])]
+    #[OpenApi\Response(factory: TokenInvalidatedResponse::class)]
     public function logout(): JsonResponse
     {
         $this->auth->logout();
-        return response()->json(['message' => 'Successfully logged out']);
+        return Response::success(['message' => 'Successfully logged out']);
     }
 
     /**
@@ -86,12 +91,15 @@ class AuthController extends Controller
      *
      * @return JsonResponse
      */
+    #[OpenApi\Operation(tags: ['auth'])]
+    #[OpenApi\Response(factory: TokenIssuedResponse::class)]
+    #[OpenApi\Response(factory: ErrorAuthenticationResponse::class, statusCode: 401)]
     public function refresh(): JsonResponse
     {
         try {
             $token = $this->auth->refresh();
         } catch (AuthenticationException $e) {
-            return response()->json(['status' => $e->getMessage()], Response::HTTP_FORBIDDEN);
+            return Response::fail('Unauthorized', Response::HTTP_FORBIDDEN);
         }
 
         return $this->respondWithToken($token);
@@ -106,7 +114,7 @@ class AuthController extends Controller
      */
     protected function respondWithToken(string $token): JsonResponse
     {
-        return response()->json([
+        return Response::success([
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => config('jwt.ttl') * 1,

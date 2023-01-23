@@ -2,7 +2,7 @@
 
 namespace Src\Common\Domain\Exceptions;
 
-final class UnauthorizedUserException extends \Exception
+final class UnauthorizedUserException extends CommonDomainException
 {
     public function __construct(string $custom_message = '')
     {
