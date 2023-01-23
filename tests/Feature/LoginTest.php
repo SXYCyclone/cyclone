@@ -57,7 +57,7 @@ class LoginTest extends TestCase
         $this->postJson($this->login_uri, $credentials)
             ->assertSessionHasNoErrors()
             ->assertStatus(Response::HTTP_UNAUTHORIZED)
-            ->assertJsonPath('error.message', 'Failed to log in');
+            ->assertJsonPath('error.message', 'User not found or inactive');
     }
 
     /** @test */
@@ -102,9 +102,9 @@ class LoginTest extends TestCase
     {
         $credentials = ['email' => 'test@invalid.credentials', 'password' => 'invalid'];
 
-        $this->post($this->login_uri, $credentials)
+        $this->postJson($this->login_uri, $credentials)
             ->assertStatus(Response::HTTP_UNAUTHORIZED)
-            ->assertJsonPath('error.message', 'Failed to log in');
+            ->assertJsonPath('error.message', 'User not found or inactive');
     }
 
     /** @test */

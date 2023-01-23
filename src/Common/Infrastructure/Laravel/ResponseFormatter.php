@@ -34,7 +34,7 @@ class ResponseFormatter implements Format
         if (!is_null($errors) || !$data) {
             // If there are errors, or no data (means error), return the error structure.
 
-            if ($errors) {
+            if (!is_null($errors)) {
                 // if there are multiple errors
                 $data = [
                     'error' => [

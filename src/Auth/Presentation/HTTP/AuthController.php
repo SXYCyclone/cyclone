@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Specifications\OpenApi\RequestBodies\Auth\LoginRequestBody;
+use Specifications\OpenApi\Responses\Auth\CredentialsInvalidResponse;
 use Specifications\OpenApi\Responses\Auth\CurrentUserResponse;
 use Specifications\OpenApi\Responses\Auth\TokenInvalidatedResponse;
 use Specifications\OpenApi\Responses\Auth\TokenIssuedResponse;
@@ -38,7 +39,7 @@ class AuthController extends Controller
     #[OpenApi\RequestBody(factory: LoginRequestBody::class)]
     #[OpenApi\Response(factory: TokenIssuedResponse::class)]
     #[OpenApi\Response(factory: ErrorValidationResponse::class, statusCode: 400)]
-    #[OpenApi\Response(factory: ErrorAuthenticationResponse::class, statusCode: 401)]
+    #[OpenApi\Response(factory: CredentialsInvalidResponse::class, statusCode: 401)]
     public function login(Request $request): JsonResponse
     {
         try {
